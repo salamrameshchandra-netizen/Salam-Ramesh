@@ -1,0 +1,6 @@
+{
+  "name": "Cricketer Workload Monitor",
+  "description": "A comprehensive workload and recovery tracker for cricketers. Monitor training volume, bowling overs, batting balls, match intensity, and recovery metrics with automated ACWR injury risk alerts.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
