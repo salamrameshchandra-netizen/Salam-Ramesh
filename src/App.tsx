@@ -18,6 +18,8 @@ import WorkloadForm from './components/WorkloadForm';
 import RecoveryForm from './components/RecoveryForm';
 import Charts from './components/Charts';
 import ProfileSettings from './components/ProfileSettings';
+import HowToUse from './components/HowToUse';
+import { generatePdfReport } from './utils/pdfGenerator';
 import { 
   TrendingUp, 
   Dumbbell, 
@@ -35,7 +37,9 @@ import {
   Plus,
   UserPlus,
   Trash2,
-  Users
+  Users,
+  BookOpen,
+  FileDown
 } from 'lucide-react';
 
 const STATIC_TODAY = '2026-05-21'; // matching current local metadata time for timelines
@@ -121,7 +125,7 @@ export default function App() {
   const [showClearConfirm, setShowClearConfirm] = useState(false);
 
   // Page index tab State
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'log-workload' | 'log-recovery' | 'charts' | 'settings'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'log-workload' | 'log-recovery' | 'charts' | 'settings' | 'how-to-use'>('dashboard');
 
   // Load and populate preselected preset data or retrieve from custom localStorage logs
   useEffect(() => {
@@ -455,6 +459,26 @@ export default function App() {
 
             {/* Safe Interactive Wiping / Reset controls (Free of iframe-blocking confirm modal dialogs) */}
             <div className="flex items-center gap-1.5 flex-wrap">
+              {/* Programmable PDF export button */}
+              <button
+                onClick={() => {
+                  generatePdfReport({
+                    profile,
+                    activePreset,
+                    sessions,
+                    recoveries,
+                    acwrMetrics: currentACWRMetrics,
+                    alerts: activeAlerts
+                  });
+                }}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-black font-mono bg-gradient-to-r from-orange-600 to-orange-550 hover:from-orange-700 hover:to-orange-650 text-white cursor-pointer transition-all duration-150 border border-orange-500/20 shadow-md hover:shadow-orange-500/20 hover:scale-[1.02] active:scale-[0.98]"
+                title="Download physiological athletic report as PDF"
+                id="export-pdf-btn"
+              >
+                <FileDown className="w-3.5 h-3.5 text-white animate-pulse" />
+                Export PDF
+              </button>
+
               {/* Reset to Default simulated data button */}
               {showResetConfirm ? (
                 <div id="reset-confirm-box" className="flex items-center gap-1 bg-slate-950 p-1 rounded-lg border border-orange-500/40">
@@ -621,6 +645,18 @@ export default function App() {
             <Settings className="w-4.5 h-4.5" />
             Bio Limits
           </button>
+
+          <button
+            onClick={() => setActiveTab('how-to-use')}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-black tracking-wider uppercase font-mono cursor-pointer transition-all ${
+              activeTab === 'how-to-use'
+                ? 'bg-slate-800 text-white shadow-inner border-b-2 border-orange-500'
+                : 'text-slate-400 hover:text-slate-250 hover:bg-slate-850/50'
+            }`}
+          >
+            <BookOpen className="w-4.5 h-4.5 text-orange-400" />
+            How to Use
+          </button>
         </div>
 
         {/* ----------------------------------------------------
@@ -703,6 +739,10 @@ export default function App() {
                 }}
               />
             </div>
+          )}
+
+          {activeTab === 'how-to-use' && (
+            <HowToUse />
           )}
         </div>
 
